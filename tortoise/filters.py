@@ -213,28 +213,28 @@ def get_m2m_filters(field_name: str, field: ManyToManyFieldInstance) -> Dict[str
             "field": field.forward_key,
             "backward_key": field.backward_key,
             "operator": operator.eq,
-            "table": Table(field.through),
+            "table": Table(field.through, schema=field.model._meta.schema),
             "value_encoder": target_table_pk.to_db_value,
         },
         f"{field_name}__not": {
             "field": field.forward_key,
             "backward_key": field.backward_key,
             "operator": not_equal,
-            "table": Table(field.through),
+            "table": Table(field.through, schema=field.model._meta.schema),
             "value_encoder": target_table_pk.to_db_value,
         },
         f"{field_name}__in": {
             "field": field.forward_key,
             "backward_key": field.backward_key,
             "operator": is_in,
-            "table": Table(field.through),
+            "table": Table(field.through, schema=field.model._meta.schema),
             "value_encoder": partial(related_list_encoder, field=target_table_pk),
         },
         f"{field_name}__not_in": {
             "field": field.forward_key,
             "backward_key": field.backward_key,
             "operator": not_in,
-            "table": Table(field.through),
+            "table": Table(field.through, schema=field.model._meta.schema),
             "value_encoder": partial(related_list_encoder, field=target_table_pk),
         },
     }
@@ -247,41 +247,53 @@ def get_backward_fk_filters(field_name: str, field: BackwardFKRelation) -> Dict[
             "field": field.related_model._meta.pk_attr,
             "backward_key": field.relation_field,
             "operator": operator.eq,
-            "table": Table(field.related_model._meta.db_table),
+            "table": Table(
+                field.related_model._meta.db_table, schema=field.related_model._meta.schema
+            ),
             "value_encoder": target_table_pk.to_db_value,
         },
         f"{field_name}__not": {
             "field": field.related_model._meta.pk_attr,
             "backward_key": field.relation_field,
             "operator": not_equal,
-            "table": Table(field.related_model._meta.db_table),
+            "table": Table(
+                field.related_model._meta.db_table, schema=field.related_model._meta.schema
+            ),
             "value_encoder": target_table_pk.to_db_value,
         },
         f"{field_name}__in": {
             "field": field.related_model._meta.pk_attr,
             "backward_key": field.relation_field,
             "operator": is_in,
-            "table": Table(field.related_model._meta.db_table),
+            "table": Table(
+                field.related_model._meta.db_table, schema=field.related_model._meta.schema
+            ),
             "value_encoder": partial(related_list_encoder, field=target_table_pk),
         },
         f"{field_name}__not_in": {
             "field": field.related_model._meta.pk_attr,
             "backward_key": field.relation_field,
             "operator": not_in,
-            "table": Table(field.related_model._meta.db_table),
+            "table": Table(
+                field.related_model._meta.db_table, schema=field.related_model._meta.schema
+            ),
             "value_encoder": partial(related_list_encoder, field=target_table_pk),
         },
         f"{field_name}__isnull": {
             "field": field.related_model._meta.pk_attr,
             "backward_key": field.relation_field,
             "operator": is_null,
-            "table": Table(field.related_model._meta.db_table),
+            "table": Table(
+                field.related_model._meta.db_table, schema=field.related_model._meta.schema
+            ),
         },
         f"{field_name}__not_isnull": {
             "field": field.related_model._meta.pk_attr,
             "backward_key": field.relation_field,
             "operator": not_null,
-            "table": Table(field.related_model._meta.db_table),
+            "table": Table(
+                field.related_model._meta.db_table, schema=field.related_model._meta.schema
+            ),
         },
     }
 
